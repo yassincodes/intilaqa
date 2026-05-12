@@ -1,7 +1,10 @@
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { E, fadeUp, stagger } from "../theme";
-import { STUDENT_NAMES, getStudentProfile } from "../data/students";
+import { STUDENTS, getStudentProfile } from "../data/students";
+
+const MotionLink = motion.create(Link);
 
 const popCard = {
   hidden: { opacity: 0, y: 28, scale: 0.96 },
@@ -16,8 +19,9 @@ const popCard = {
 export default function StudentsPage() {
   const students = useMemo(
     () =>
-      STUDENT_NAMES.map((name) => ({
+      STUDENTS.map(({ name, slug }) => ({
         name,
+        slug,
         ...getStudentProfile(name),
       })),
     [],
@@ -58,7 +62,7 @@ export default function StudentsPage() {
             </div>
             <div className="students-metric-divider" />
             <div className="students-metric">
-              <span className="students-metric-value">٣</span>
+              <span className="students-metric-value">3</span>
               <span className="students-metric-label">مؤشرات لكل بطاقة</span>
             </div>
             <div className="students-metric-divider" />
@@ -78,10 +82,12 @@ export default function StudentsPage() {
       >
         <div className="students-grid">
           {students.map((s, idx) => (
-            <motion.article
-              key={s.name}
+            <MotionLink
+              key={`${s.slug}-${s.name}`}
+              to={`/students/${encodeURIComponent(s.slug)}`}
+              className="student-card-link student-card"
+              aria-label={`شارة ${s.name}`}
               variants={popCard}
-              className="student-card"
               style={{
                 "--m-ring": s.accent.ring,
                 "--m-glow": s.accent.glow,
@@ -130,7 +136,7 @@ export default function StudentsPage() {
                   </span>
                 </li>
               </ul>
-            </motion.article>
+            </MotionLink>
           ))}
         </div>
       </motion.section>

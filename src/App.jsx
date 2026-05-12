@@ -20,8 +20,13 @@ import ActionWallPage from "./pages/ActionWallPage";
 import AboutPage from "./pages/AboutPage";
 import TVPage from "./pages/TVPage";
 import StudentsPage from "./pages/StudentsPage";
+import StudentBadgePage from "./pages/StudentBadgePage";
 import CharacterPage from "./pages/CharacterPage";
 import CharacterChatPage from "./pages/CharacterChatPage";
+import MoyassinPage from "./pages/MoyassinPage";
+import MoyassinLayout from "./moyassin/MoyassinLayout";
+import MoyassinCharacterPage from "./moyassin/MoyassinCharacterPage";
+import MoyassinChatPage from "./moyassin/MoyassinChatPage";
 
 const NAV = [
   { path: "/", label: "الرئيسية" },
@@ -200,11 +205,20 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Full-screen chat: no site nav or footer — dedicated speaking UI */}
+        <Route path="characters/:slug/chat/:mode" element={<CharacterChatPage />} />
+        {/* مياثن: مساحة وواجهة مستقلتان — بدون شريط مدرسة الانطلاقة */}
+        <Route path="moyassin" element={<MoyassinLayout />}>
+          <Route index element={<MoyassinPage />} />
+          <Route path="characters/:slug" element={<MoyassinCharacterPage />} />
+          <Route path="characters/:slug/chat/:mode" element={<MoyassinChatPage />} />
+        </Route>
         <Route element={<AppShell />}>
           <Route index element={<HomePage />} />
           <Route path="eco-club" element={<EcoClubPage />} />
           <Route path="eco-dashboard" element={<EcoClubPage />} />
           <Route path="students" element={<StudentsPage />} />
+          <Route path="students/:slug" element={<StudentBadgePage />} />
           <Route path="eco-missions" element={<Navigate to="/eco-club" replace />} />
           <Route path="eco-friends" element={<EcoFriendsPage />} />
           <Route path="action-wall" element={<ActionWallPage />} />
@@ -212,7 +226,6 @@ export default function App() {
           <Route path="about" element={<AboutPage />} />
           <Route path="tv" element={<TVPage />} />
           <Route path="characters/:slug" element={<CharacterPage />} />
-          <Route path="characters/:slug/chat/:mode" element={<CharacterChatPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

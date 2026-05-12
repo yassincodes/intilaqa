@@ -1,8 +1,28 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { C, fadeUp, stagger, popIn } from "../theme";
+import { getEcoClubDashboardStats } from "../data/students";
+
+function formatCompactCount(n) {
+  if (n < 1000) return String(n);
+  const k = n / 1000;
+  const rounded = Math.round(k * 10) / 10;
+  const text = Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+  return `${text}k`;
+}
 
 export default function EcoClubPage() {
+  const stats = useMemo(() => {
+    const s = getEcoClubDashboardStats();
+    return [
+      { n: String(s.activeMembers), l: "أعضاء نشطون في النادي", i: "👥", c: C.primary },
+      { n: String(s.completedInitiatives), l: "مبادرة بيئية مكتملة", i: "✅", c: C.gold },
+      { n: formatCompactCount(s.greenPoints), l: "نقطة خضراء للمدرسة", i: "⭐", c: C.accent },
+      { n: String(s.symbolicTrees), l: "شجرة رمزية مزروعة", i: "🌳", c: C.primarySoft },
+    ];
+  }, []);
+
   return (
     <div dir="rtl" className="page-root" style={{ padding: "100px 5% 80px", maxWidth: 1280, margin: "0 auto" }}>
       <motion.div
@@ -38,12 +58,7 @@ export default function EcoClubPage() {
           marginBottom: 56,
         }}
       >
-        {[
-          { n: "186", l: "أعضاء نشطون في النادي", i: "👥", c: C.primary },
-          { n: "312", l: "مبادرة بيئية مكتملة", i: "✅", c: C.gold },
-          { n: "4.2k", l: "نقطة خضراء للمدرسة", i: "⭐", c: C.accent },
-          { n: "12", l: "شجرة رمزية مزروعة", i: "🌳", c: C.primarySoft },
-        ].map((s) => (
+        {stats.map((s) => (
           <motion.div
             key={s.l}
             variants={popIn}

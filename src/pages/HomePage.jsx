@@ -199,53 +199,23 @@ export default function HomePage() {
   const blobDriftA = useTransform(scrollYProgress, [0, 1], [0, -40]);
   const blobDriftB = useTransform(scrollYProgress, [0, 1], [0, 28]);
 
-  /** Same five friends — shown as a strip under the headline (responsive grid). */
+  /** ترتيب الشخصيات: نظيف، نظيفة، الطائر الطنان، شموسه، قطرة. */
   const schoolMascots = useMemo(
     () => [
       {
-        key: "shamouza",
-        slug: "shamouza",
-        alt: "شموسه",
-        src: shamouzaSunImg,
-        scatterClass: "mascot-scatter--sun",
+        key: "boy",
+        slug: "nadhif",
+        alt: "نظيف",
+        src: nadhifBoyImg,
+        scatterClass: "mascot-scatter--boy",
         tiltLayerStyle: {
-          "--mascot-tilt": "-6deg",
-          "--mascot-parallax-x": "12px",
+          "--mascot-tilt": "5deg",
+          "--mascot-parallax-x": "10px",
           "--mascot-parallax-y": "10px",
         },
         floatDelay: 0.06,
         drift: 10,
-        dur: 8.1,
-      },
-      {
-        key: "bird",
-        slug: "hummingbird",
-        alt: "الطائر الطنان",
-        src: hummingbirdImg,
-        scatterClass: "mascot-scatter--bird",
-        tiltLayerStyle: {
-          "--mascot-tilt": "5deg",
-          "--mascot-parallax-x": "12px",
-          "--mascot-parallax-y": "10px",
-        },
-        floatDelay: 0.12,
-        drift: 12,
-        dur: 9,
-      },
-      {
-        key: "qatra",
-        slug: "qatra",
-        alt: "قطرة",
-        src: qatraImg,
-        scatterClass: "mascot-scatter--qatra",
-        tiltLayerStyle: {
-          "--mascot-tilt": "8deg",
-          "--mascot-parallax-x": "10px",
-          "--mascot-parallax-y": "8px",
-        },
-        floatDelay: 0.18,
-        drift: 10,
-        dur: 7.8,
+        dur: 7.6,
       },
       {
         key: "girl",
@@ -263,19 +233,49 @@ export default function HomePage() {
         dur: 7.1,
       },
       {
-        key: "boy",
-        slug: "nadhif",
-        alt: "نظيف",
-        src: nadhifBoyImg,
-        scatterClass: "mascot-scatter--boy",
+        key: "bird",
+        slug: "hummingbird",
+        alt: "الطائر الطنان",
+        src: hummingbirdImg,
+        scatterClass: "mascot-scatter--bird",
         tiltLayerStyle: {
           "--mascot-tilt": "5deg",
-          "--mascot-parallax-x": "10px",
+          "--mascot-parallax-x": "12px",
           "--mascot-parallax-y": "10px",
         },
         floatDelay: 0.14,
+        drift: 12,
+        dur: 9,
+      },
+      {
+        key: "shamouza",
+        slug: "shamouza",
+        alt: "شموسه",
+        src: shamouzaSunImg,
+        scatterClass: "mascot-scatter--sun",
+        tiltLayerStyle: {
+          "--mascot-tilt": "-6deg",
+          "--mascot-parallax-x": "12px",
+          "--mascot-parallax-y": "10px",
+        },
+        floatDelay: 0.16,
         drift: 10,
-        dur: 7.6,
+        dur: 8.1,
+      },
+      {
+        key: "qatra",
+        slug: "qatra",
+        alt: "قطرة",
+        src: qatraImg,
+        scatterClass: "mascot-scatter--qatra",
+        tiltLayerStyle: {
+          "--mascot-tilt": "8deg",
+          "--mascot-parallax-x": "10px",
+          "--mascot-parallax-y": "8px",
+        },
+        floatDelay: 0.18,
+        drift: 10,
+        dur: 7.8,
       },
     ],
     [],
@@ -554,11 +554,14 @@ export default function HomePage() {
               whileHover={reduceMotion ? {} : { scale: 1.02 }}
               transition={{ type: "spring", stiffness: 200, damping: 22 }}
             >
-              <div className="landing-split-screen-glare" aria-hidden />
-              <span className="landing-split-screen-play" aria-hidden>
-                ▶
-              </span>
-              <span className="landing-split-screen-label">شاهد الآن</span>
+              <iframe
+                className="landing-split-screen-iframe"
+                src="https://www.youtube.com/embed/1FG92SEv_TM?rel=0"
+                title="قصص من داخل المدرسة — فيديو قصير"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
             </motion.div>
             <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.98 }} style={{ marginTop: 20 }}>
               <Link to="/tv" className="btn-eco">

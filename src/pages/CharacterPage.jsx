@@ -5,8 +5,8 @@ import { getCharacterBySlug, CHAT_MODES } from "../data/schoolCharacters";
 
 const CHAT_LABELS = {
   text: { title: "محادثة نصية", desc: "اكتب أسئلتك وتلقَّ ردوداً من الشخصية.", icon: "💬" },
-  voice: { title: "محادثة صوتية", desc: "تحدث بصوتك (يتطلب إذناً من المتصفح لاحقاً).", icon: "🎙️" },
-  video: { title: "محادثة بالفيديو", desc: "تواصل مرئياً عند تفعيل الخدمة على المنصة.", icon: "📹" },
+  voice: { title: "محادثة صوتية", desc: "تحدّث بصوتك — نفس الزر يبدأ ويوقف التسجيل.", icon: "🎙️" },
+  video: { title: "محادثة بالفيديو", desc: "شاهد الشخصية وهي تسمعك وتردّ بصوت وحركة.", icon: "📹" },
 };
 
 export default function CharacterPage() {
@@ -70,12 +70,14 @@ export default function CharacterPage() {
               اختر طريقة التحدث مع {character.name}
             </h2>
             <p className="character-chat-lead" style={{ color: C.muted }}>
-              ثلاث قنوات — نص جاهز للتجربة، وصوت وفيديو جاهزة للربط لاحقاً مع خدمات المنصة.
+              {character.videoCall
+                ? "نص وصوت وفيديو — اختر اللي يريّحك."
+                : "نص وصوت جاهزين؛ الفيديو متاح لبعض الشخصيات فقط."}
             </p>
           </motion.header>
 
           <div className="character-chat-modes">
-            {CHAT_MODES.map((mode, index) => {
+            {CHAT_MODES.filter((mode) => mode !== "video" || character.videoCall).map((mode, index) => {
               const meta = CHAT_LABELS[mode];
               return (
                 <motion.div

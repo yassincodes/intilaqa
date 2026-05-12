@@ -1,34 +1,62 @@
 /**
- * طلاب الفصل — أسماء العرض كما وردت (مع دمج التكرار الواضح لنفس الاسم).
+ * أعضاء النادي — حدّث القائمة أدناه عند الحاجة.
+ * مسار كل عضو: /students/<الاسم-بشرطات> (مثال: محمد-ياسين-سليمان؛ عند تكرار الاسم الكامل يُضاف -2).
  */
 export const STUDENT_NAMES = [
-  "آية",
-  "أحمد",
-  "أسيل",
-  "ألمى",
-  "أمين",
-  "أيوب",
-  "إسلام",
-  "إيناس",
-  "تقوى",
-  "خميس",
-  "خليل",
-  "ريم",
-  "ريان",
-  "سارة",
-  "سراط",
-  "سليم",
-  "شمس البدور",
-  "فارس",
-  "محمد علي",
-  "مجدي",
-  "مهدي",
-  "محمد",
-  "نديم",
-  "نور الهدى",
-  "نوران",
-  "يوسف",
+  "ألاء غبارو",
+  "يوسف سليمان",
+  "ريان معيز",
+  "خديجة عبور",
+  "مجدي الجزيري",
+  "بشير بن عبد الله",
+  "أمين العلوي",
+  "نوران بن يونس",
+  "لميس المي",
+  "نور الهدى غميض",
+  "شمس البدور البجاوي",
+  "ألما كريستو",
+  "آدم بن قارة",
+  "تقوى صدور",
+  "محمد علي عياد",
+  "محمد ياسين سليمان",
+  "سارة ديلو",
+  "ريم المبروك",
+  "يوسف جعفر",
 ];
+
+/** يحوّل الاسم الكامل إلى مقطع مسار: «محمد ياسين سليمان» → «محمد-ياسين-سليمان». */
+function nameToSlug(name) {
+  return name.trim().split(/\s+/).filter(Boolean).join("-");
+}
+
+/** @param {string[]} names */
+function buildStudentEntries(names) {
+  const taken = new Set();
+  return names.map((name) => {
+    let slug = nameToSlug(name);
+    let final = slug;
+    let n = 2;
+    while (taken.has(final)) {
+      final = `${slug}-${n}`;
+      n += 1;
+    }
+    taken.add(final);
+    return { name, slug: final };
+  });
+}
+
+export const STUDENTS = buildStudentEntries(STUDENT_NAMES);
+
+/** @param {string} slug from useParams (decoded) */
+export function getStudentBySlug(slug) {
+  if (!slug) return null;
+  try {
+    const decoded = decodeURIComponent(slug);
+    return STUDENTS.find((s) => s.slug === decoded) ?? null;
+  } catch {
+    return STUDENTS.find((s) => s.slug === slug) ?? null;
+  }
+}
 
 const KID_EMOJIS = ["👧", "👦", "🧒", "👩‍🎓", "👨‍🎓", "🧑‍🎓"];
 
@@ -57,5 +85,25 @@ export function getStudentProfile(name) {
     missions: 3 + (h % 28),
     greenPoints: 24 + (h % 180),
     accent: MEMBER_ACCENTS[h % MEMBER_ACCENTS.length],
+  };
+}
+
+/** لوحة نادي البيئة — مجاميع من بيانات الأعضاء (نفس منطق البطاقات الفردية). */
+export function getEcoClubDashboardStats() {
+  let completedInitiatives = 0;
+  let greenPoints = 0;
+  let symbolicTrees = 0;
+  for (const { name } of STUDENTS) {
+    const p = getStudentProfile(name);
+    const h = hashName(name);
+    completedInitiatives += p.missions;
+    greenPoints += p.greenPoints;
+    symbolicTrees += 1 + (h % 3);
+  }
+  return {
+    activeMembers: STUDENTS.length,
+    completedInitiatives,
+    greenPoints,
+    symbolicTrees,
   };
 }

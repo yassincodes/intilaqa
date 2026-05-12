@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { C, E, fadeUp, stagger } from "../theme";
-import { SCHOOL_CHARACTERS } from "../data/schoolCharacters";
+import { schoolCharactersInEcoFriendsOrder } from "../data/schoolCharacters";
 
 export default function EcoFriendsPage() {
+  const characters = schoolCharactersInEcoFriendsOrder();
+
   return (
     <div className="eco-friends-page" dir="rtl">
       <section className="eco-friends-hero">
@@ -32,7 +34,7 @@ export default function EcoFriendsPage() {
               className="eco-friends-hero-strip"
               aria-label="معاينة الشخصيات"
             >
-              {SCHOOL_CHARACTERS.map((m, i) => (
+              {characters.map((m, i) => (
                 <motion.li
                   key={m.slug}
                   initial={{ opacity: 0, scale: 0.86 }}
@@ -68,7 +70,7 @@ export default function EcoFriendsPage() {
           </motion.header>
 
           <div className="eco-friends-grid">
-            {SCHOOL_CHARACTERS.map((m, index) => (
+            {characters.map((m, index) => (
               <motion.div
                 key={m.slug}
                 initial={{ opacity: 0, y: 22 }}
