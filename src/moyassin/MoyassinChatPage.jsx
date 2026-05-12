@@ -27,7 +27,6 @@ export default function MoyassinChatPage() {
       character={character}
       mode={mode}
       profilePath={`/moyassin/characters/${character.slug}`}
-      peerSubtitle="شخصية مياثن"
       useChatHook={useMoyassinOpenRouterChat}
       scopeClassName="mys-chat-scope"
     />

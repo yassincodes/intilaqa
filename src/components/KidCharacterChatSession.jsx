@@ -560,7 +560,7 @@ export function CharacterVideoChat({ character, chat }) {
  *   character: { slug: string; name: string; img: string; videoCall?: object; feminineArabic?: boolean };
  *   mode: string;
  *   profilePath: string;
- *   peerSubtitle: string;
+ *   peerSubtitle?: string;
  *   useChatHook: (c: unknown) => object;
  *   scopeClassName?: string;
  * }} props
@@ -590,7 +590,9 @@ export function KidChatSession({
           <img className="kid-chat-peer-img" src={character.img} alt="" draggable={false} />
           <div>
             <div className="kid-chat-peer-name">{character.name}</div>
-            <div className="kid-chat-peer-tag">{peerSubtitle}</div>
+            {peerSubtitle ? (
+              <div className="kid-chat-peer-tag">{peerSubtitle}</div>
+            ) : null}
           </div>
         </div>
       </header>

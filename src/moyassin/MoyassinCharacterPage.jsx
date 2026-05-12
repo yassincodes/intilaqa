@@ -64,7 +64,6 @@ export default function MoyassinCharacterPage() {
               <Link to="/moyassin" className="mys-char-back">
                 → الرئيسية
               </Link>
-              <span className="mys-char-eyebrow">شخصية مياثن</span>
               <h1 className="mys-char-title" style={{ color: "#f8fafc" }}>
                 {displayName}
               </h1>

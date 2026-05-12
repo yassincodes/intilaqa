@@ -6,6 +6,10 @@ import {
   TEACHER,
   TEACHER_ROLE_AR,
 } from "../data/moyassinRoute";
+import {
+  MOYASSIN_SESSION_DATE_AR,
+  MOYASSIN_STUDENT_NAME,
+} from "../data/moyassinSessionMeta";
 
 export default function MoyassinPage() {
   return (
@@ -13,19 +17,16 @@ export default function MoyassinPage() {
       <section className="moyassin-hero mys-home-hero">
         <div className="moyassin-hero-inner">
           <motion.div
-            className="moyassin-hero-copy"
+            className="moyassin-hero-copy mys-hero-session"
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: E.smooth }}
           >
-            <p className="moyassin-eyebrow mys-home-eyebrow" style={{ color: "rgba(148,163,184,0.95)" }}>
-              عالم مستقل
-            </p>
-            <h1 className="moyassin-title mys-home-title" style={{ color: "#f1f5f9" }}>
-              مياثن
-            </h1>
-            <p className="moyassin-lead mys-home-lead" style={{ color: "rgba(203,213,225,0.95)" }}>
-              شخصيتان للحوار — نص وصوت وفيديو. لا صلة لهذا المسار بصفحات المدرسة.
+            <div className="mys-hero-session-glow" aria-hidden />
+            <p className="mys-hero-session-chip">{MOYASSIN_SESSION_DATE_AR}</p>
+            <h1 className="mys-hero-session-name">{MOYASSIN_STUDENT_NAME}</h1>
+            <p className="mys-hero-session-lead">
+              اختر شخصية للحوار — نص، صوت، أو فيديو.
             </p>
           </motion.div>
         </div>

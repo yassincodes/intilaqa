@@ -1,15 +1,27 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import {
+  MOYASSIN_SESSION_DATE_AR,
+  MOYASSIN_STUDENT_NAME,
+} from "../data/moyassinSessionMeta";
+
+function isMoyassinIndexPath(pathname) {
+  return pathname === "/moyassin" || pathname === "/moyassin/";
+}
 
 export default function MoyassinLayout() {
+  const { pathname } = useLocation();
+  const showSessionHeader = isMoyassinIndexPath(pathname);
+
   return (
     <div className="mys-app" dir="rtl">
-      <header className="mys-topbar">
-        <Link to="/moyassin" className="mys-brand" title="الصفحة الرئيسية لمياثن">
-          <span className="mys-brand-glow" aria-hidden />
-          <span className="mys-brand-text">مياثن</span>
-        </Link>
-        <span className="mys-topbar-note">مساحة مستقلة</span>
-      </header>
+      {showSessionHeader ? (
+        <header className="mys-topbar mys-topbar--session">
+          <Link to="/moyassin" className="mys-session-brand" title="الرئيسية">
+            <span className="mys-session-chip">{MOYASSIN_SESSION_DATE_AR}</span>
+            <span className="mys-session-name">{MOYASSIN_STUDENT_NAME}</span>
+          </Link>
+        </header>
+      ) : null}
       <div className="mys-outlet">
         <Outlet />
       </div>
