@@ -1,7 +1,7 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { E, fadeUp, stagger } from "../theme";
-import { getStudentBySlug, getStudentProfile } from "../data/students";
+import { getStudentByHandle, getStudentProfile } from "../data/students";
 
 const statItem = {
   hidden: { opacity: 0, y: 16, scale: 0.96 },
@@ -25,8 +25,11 @@ const cardReveal = {
 };
 
 export default function StudentBadgePage() {
-  const { slug } = useParams();
-  const entry = slug ? getStudentBySlug(slug) : null;
+  const { handle: handleSegment } = useParams();
+  const entry =
+    handleSegment && handleSegment.startsWith("@")
+      ? getStudentByHandle(handleSegment.slice(1))
+      : null;
 
   if (!entry) {
     return <Navigate to="/students" replace />;
@@ -105,6 +108,9 @@ export default function StudentBadgePage() {
               </div>
 
               <h1 className="student-badge-name">{entry.name}</h1>
+              <p className="student-badge-handle" translate="no">
+                @{entry.handle}
+              </p>
               <p className="student-badge-role">عضو نادي بيئة · مدرسة الانطلاقة</p>
             </header>
 

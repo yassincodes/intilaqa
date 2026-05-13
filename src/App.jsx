@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   BrowserRouter,
   Routes,
   Route,
   useLocation,
   useOutlet,
+  useParams,
   NavLink,
   Link,
   Navigate,
@@ -21,12 +22,24 @@ import AboutPage from "./pages/AboutPage";
 import TVPage from "./pages/TVPage";
 import StudentsPage from "./pages/StudentsPage";
 import StudentBadgePage from "./pages/StudentBadgePage";
+import { getStudentBySlug, studentProfilePath } from "./data/students";
 import CharacterPage from "./pages/CharacterPage";
 import CharacterChatPage from "./pages/CharacterChatPage";
 import MoyassinPage from "./pages/MoyassinPage";
 import MoyassinLayout from "./moyassin/MoyassinLayout";
 import MoyassinCharacterPage from "./moyassin/MoyassinCharacterPage";
 import MoyassinChatPage from "./moyassin/MoyassinChatPage";
+
+if (typeof window !== "undefined" && "scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
+function LegacyStudentSlugRedirect() {
+  const { slug } = useParams();
+  const entry = slug ? getStudentBySlug(slug) : null;
+  if (!entry) return <Navigate to="/students" replace />;
+  return <Navigate to={studentProfilePath(entry.handle)} replace />;
+}
 
 const NAV = [
   { path: "/", label: "الرئيسية" },
@@ -37,6 +50,25 @@ const NAV = [
   { path: "/about", label: "عن المدرسة" },
   { path: "/tv", label: "📺 TV" },
 ];
+
+/** Reset document scroll on every client-side navigation (React Router keeps position by default). */
+function ScrollToTop() {
+  const { pathname, search } = useLocation();
+
+  useLayoutEffect(() => {
+    const scrollNow = () => {
+      const root = document.scrollingElement ?? document.documentElement;
+      root.scrollTop = 0;
+      root.scrollLeft = 0;
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    };
+    scrollNow();
+    const id = requestAnimationFrame(scrollNow);
+    return () => cancelAnimationFrame(id);
+  }, [pathname, search]);
+
+  return null;
+}
 
 function AnimatedOutlet() {
   const location = useLocation();
@@ -204,6 +236,7 @@ function AppShell() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Full-screen chat: no site nav or footer — dedicated speaking UI */}
         <Route path="characters/:slug/chat/:mode" element={<CharacterChatPage />} />
@@ -218,7 +251,7 @@ export default function App() {
           <Route path="eco-club" element={<EcoClubPage />} />
           <Route path="eco-dashboard" element={<EcoClubPage />} />
           <Route path="students" element={<StudentsPage />} />
-          <Route path="students/:slug" element={<StudentBadgePage />} />
+          <Route path="students/:slug" element={<LegacyStudentSlugRedirect />} />
           <Route path="eco-missions" element={<Navigate to="/eco-club" replace />} />
           <Route path="eco-friends" element={<EcoFriendsPage />} />
           <Route path="action-wall" element={<ActionWallPage />} />
@@ -226,6 +259,7 @@ export default function App() {
           <Route path="about" element={<AboutPage />} />
           <Route path="tv" element={<TVPage />} />
           <Route path="characters/:slug" element={<CharacterPage />} />
+          <Route path=":handle" element={<StudentBadgePage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

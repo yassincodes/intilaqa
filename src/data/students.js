@@ -1,53 +1,89 @@
 /**
  * أعضاء النادي — حدّث القائمة أدناه عند الحاجة.
- * مسار كل عضو: /students/<الاسم-بشرطات> (مثال: محمد-ياسين-سليمان؛ عند تكرار الاسم الكامل يُضاف -2).
+ * مسار كل عضو: /@<handle> (مثال: /@mohamed_yassin). الروابط القديمة /students/<slug> تُحوَّل تلقائياً.
  */
-export const STUDENT_NAMES = [
-  "ألاء غبارو",
-  "يوسف سليمان",
-  "ريان معيز",
-  "خديجة عبور",
-  "مجدي الجزيري",
-  "بشير بن عبد الله",
-  "أمين العلوي",
-  "نوران بن يونس",
-  "لميس المي",
-  "نور الهدى غميض",
-  "شمس البدور البجاوي",
-  "ألما كريستو",
-  "آدم بن قارة",
-  "تقوى صدور",
-  "محمد علي عياد",
-  "محمد ياسين سليمان",
-  "سارة ديلو",
-  "ريم المبروك",
-  "يوسف جعفر",
+const STUDENT_ROWS = [
+  { name: "ألاء غبارو", handle: "alaa_ghabarou" },
+  { name: "يوسف سليمان", handle: "yousef_sulayman" },
+  { name: "ريان معيز", handle: "rayan_maeez" },
+  { name: "خديجة عبور", handle: "khadija_abour" },
+  { name: "مجدي الجزيري", handle: "magdi_aljazeeri" },
+  { name: "بشير بن عبد الله", handle: "bashir_abdallah" },
+  { name: "أمين العلوي", handle: "amin_alalawi" },
+  { name: "نوران بن يونس", handle: "nouran_benyounis" },
+  { name: "لميس المي", handle: "lamees_almay" },
+  { name: "نور الهدى غميض", handle: "nour_alhuda_ghameed" },
+  { name: "شمس البدور البجاوي", handle: "shams_albudoor_albajawi" },
+  { name: "ألما كريستو", handle: "alma_kristo" },
+  { name: "آدم بن قارة", handle: "adam_ben_qara" },
+  { name: "تقوى صدور", handle: "taqwa_sudoor" },
+  { name: "محمد علي عياد", handle: "mohamed_ali_iyyad" },
+  { name: "محمد ياسين سليمان", handle: "mohamed_yassin" },
+  { name: "سارة ديلو", handle: "sara_dilo" },
+  { name: "ريم المبروك", handle: "reem_almabrouk" },
+  { name: "يوسف جعفر", handle: "yousef_jafar" },
 ];
 
-/** يحوّل الاسم الكامل إلى مقطع مسار: «محمد ياسين سليمان» → «محمد-ياسين-سليمان». */
+/** يحوّل الاسم الكامل إلى مقطع مسار قديم: «محمد ياسين سليمان» → «محمد-ياسين-سليمان». */
 function nameToSlug(name) {
   return name.trim().split(/\s+/).filter(Boolean).join("-");
 }
 
-/** @param {string[]} names */
-function buildStudentEntries(names) {
-  const taken = new Set();
-  return names.map((name) => {
-    let slug = nameToSlug(name);
-    let final = slug;
-    let n = 2;
-    while (taken.has(final)) {
-      final = `${slug}-${n}`;
-      n += 1;
+/** @param {typeof STUDENT_ROWS} rows */
+function buildStudentEntries(rows) {
+  const takenSlugs = new Set();
+  const takenHandles = new Set();
+  return rows.map(({ name, handle }) => {
+    const normalizedHandle = String(handle)
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9_]/g, "_")
+      .replace(/_+/g, "_")
+      .replace(/^_|_$/g, "");
+    let uniqueHandle = normalizedHandle;
+    let hn = 2;
+    while (takenHandles.has(uniqueHandle)) {
+      uniqueHandle = `${normalizedHandle}_${hn}`;
+      hn += 1;
     }
-    taken.add(final);
-    return { name, slug: final };
+    takenHandles.add(uniqueHandle);
+
+    let slug = nameToSlug(name);
+    let finalSlug = slug;
+    let sn = 2;
+    while (takenSlugs.has(finalSlug)) {
+      finalSlug = `${slug}-${sn}`;
+      sn += 1;
+    }
+    takenSlugs.add(finalSlug);
+    return { name, handle: uniqueHandle, slug: finalSlug };
   });
 }
 
-export const STUDENTS = buildStudentEntries(STUDENT_NAMES);
+export const STUDENTS = buildStudentEntries(STUDENT_ROWS);
 
-/** @param {string} slug from useParams (decoded) */
+/** أسماء فقط (للتوافق مع أي استيراد قديم) */
+export const STUDENT_NAMES = STUDENTS.map((s) => s.name);
+
+/** مسار الشارة لعرض الرابط أو المشاركة */
+export function studentProfilePath(handle) {
+  const h = String(handle).replace(/^@/, "").trim();
+  return h ? `/@${encodeURIComponent(h)}` : "/students";
+}
+
+/** @param {string} handle بدون @، من useParams أو شريط العنوان */
+export function getStudentByHandle(handle) {
+  if (!handle) return null;
+  try {
+    const raw = decodeURIComponent(handle).replace(/^@/, "").trim().toLowerCase();
+    return STUDENTS.find((s) => s.handle === raw) ?? null;
+  } catch {
+    const raw = String(handle).replace(/^@/, "").trim().toLowerCase();
+    return STUDENTS.find((s) => s.handle === raw) ?? null;
+  }
+}
+
+/** @param {string} slug من useParams (decoded) — مسارات /students/ القديمة */
 export function getStudentBySlug(slug) {
   if (!slug) return null;
   try {

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { E, fadeUp, stagger } from "../theme";
-import { STUDENTS, getStudentProfile } from "../data/students";
+import { STUDENTS, getStudentProfile, studentProfilePath } from "../data/students";
 
 const MotionLink = motion.create(Link);
 
@@ -19,9 +19,9 @@ const popCard = {
 export default function StudentsPage() {
   const students = useMemo(
     () =>
-      STUDENTS.map(({ name, slug }) => ({
+      STUDENTS.map(({ name, handle }) => ({
         name,
-        slug,
+        handle,
         ...getStudentProfile(name),
       })),
     [],
@@ -83,8 +83,8 @@ export default function StudentsPage() {
         <div className="students-grid">
           {students.map((s, idx) => (
             <MotionLink
-              key={`${s.slug}-${s.name}`}
-              to={`/students/${encodeURIComponent(s.slug)}`}
+              key={`${s.handle}-${s.name}`}
+              to={studentProfilePath(s.handle)}
               className="student-card-link student-card"
               aria-label={`شارة ${s.name}`}
               variants={popCard}

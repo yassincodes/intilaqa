@@ -3842,8 +3842,17 @@
   filter: drop-shadow(0 10px 20px rgba(15, 77, 39, 0.12));
 }
 
+.student-badge-handle {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--b-ring, #166534) 55%, #64748b);
+  font-variant-ligatures: none;
+}
+
 .student-badge-name {
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   font-size: clamp(28px, 5.5vw, 38px);
   font-weight: 950;
   letter-spacing: -0.035em;
