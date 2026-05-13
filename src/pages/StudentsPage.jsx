@@ -4,8 +4,6 @@ import { motion } from "framer-motion";
 import { E, fadeUp, stagger } from "../theme";
 import { STUDENTS, getStudentProfile, studentProfilePath } from "../data/students";
 
-const MotionLink = motion.create(Link);
-
 const popCard = {
   hidden: { opacity: 0, y: 28, scale: 0.96 },
   show: {
@@ -82,61 +80,65 @@ export default function StudentsPage() {
       >
         <div className="students-grid">
           {students.map((s, idx) => (
-            <MotionLink
+            <Link
               key={`${s.handle}-${s.name}`}
               to={studentProfilePath(s.handle)}
-              className="student-card-link student-card"
+              className="student-card-link"
               aria-label={`شارة ${s.name}`}
-              variants={popCard}
-              style={{
-                "--m-ring": s.accent.ring,
-                "--m-glow": s.accent.glow,
-                "--m-chip": s.accent.chip,
-              }}
-              whileHover={{ y: -10, transition: { duration: 0.35, ease: E.smooth } }}
             >
-              <div className="student-card-shine" aria-hidden />
-              <span className="student-card-index" aria-hidden>
-                {idx + 1}
-              </span>
-              <div className="student-card-top">
-                <div className="student-card-avatar" aria-hidden>
-                  <span className="student-card-avatar-ring" />
-                  <span className="student-card-emoji">{s.emoji}</span>
+              <motion.div
+                className="student-card"
+                variants={popCard}
+                style={{
+                  "--m-ring": s.accent.ring,
+                  "--m-glow": s.accent.glow,
+                  "--m-chip": s.accent.chip,
+                }}
+                whileHover={{ y: -10, transition: { duration: 0.35, ease: E.smooth } }}
+              >
+                <div className="student-card-shine" aria-hidden />
+                <span className="student-card-index" aria-hidden>
+                  {idx + 1}
+                </span>
+                <div className="student-card-top">
+                  <div className="student-card-avatar" aria-hidden>
+                    <span className="student-card-avatar-ring" />
+                    <span className="student-card-emoji">{s.emoji}</span>
+                  </div>
+                  <h2 className="student-card-name">{s.name}</h2>
+                  <p className="student-card-tag">عضو نادي بيئة</p>
                 </div>
-                <h2 className="student-card-name">{s.name}</h2>
-                <p className="student-card-tag">عضو نادي بيئة</p>
-              </div>
-              <ul className="student-card-stats">
-                <li className="student-stat student-stat--roses">
-                  <span className="student-stat-icon" aria-hidden>
-                    🌹
-                  </span>
-                  <span className="student-stat-meta">
-                    <span className="student-stat-label">ورود التقدير</span>
-                    <span className="student-stat-value">{s.roses}</span>
-                  </span>
-                </li>
-                <li className="student-stat student-stat--missions">
-                  <span className="student-stat-icon" aria-hidden>
-                    ✨
-                  </span>
-                  <span className="student-stat-meta">
-                    <span className="student-stat-label">مشاركات</span>
-                    <span className="student-stat-value">{s.missions}</span>
-                  </span>
-                </li>
-                <li className="student-stat student-stat--green">
-                  <span className="student-stat-icon" aria-hidden>
-                    🌿
-                  </span>
-                  <span className="student-stat-meta">
-                    <span className="student-stat-label">نقاط خضراء</span>
-                    <span className="student-stat-value">{s.greenPoints}</span>
-                  </span>
-                </li>
-              </ul>
-            </MotionLink>
+                <ul className="student-card-stats">
+                  <li className="student-stat student-stat--roses">
+                    <span className="student-stat-icon" aria-hidden>
+                      🌹
+                    </span>
+                    <span className="student-stat-meta">
+                      <span className="student-stat-label">ورود التقدير</span>
+                      <span className="student-stat-value">{s.roses}</span>
+                    </span>
+                  </li>
+                  <li className="student-stat student-stat--missions">
+                    <span className="student-stat-icon" aria-hidden>
+                      ✨
+                    </span>
+                    <span className="student-stat-meta">
+                      <span className="student-stat-label">مشاركات</span>
+                      <span className="student-stat-value">{s.missions}</span>
+                    </span>
+                  </li>
+                  <li className="student-stat student-stat--green">
+                    <span className="student-stat-icon" aria-hidden>
+                      🌿
+                    </span>
+                    <span className="student-stat-meta">
+                      <span className="student-stat-label">نقاط خضراء</span>
+                      <span className="student-stat-value">{s.greenPoints}</span>
+                    </span>
+                  </li>
+                </ul>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </motion.section>

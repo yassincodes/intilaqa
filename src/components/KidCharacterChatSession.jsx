@@ -211,7 +211,7 @@ export function CharacterVoiceChat({ character, chat }) {
 
         if (blob.size < 400) {
           setPhase("idle");
-          setError("صوتك قصير جداً 🎤 كلّم أطول شوي ثم أوّق بنفس الزر.");
+          setError("صوتك قصير جداً 🎤 كلّم أطول شوي ثم أوقف بنفس الزر.");
           return;
         }
 
@@ -311,7 +311,7 @@ export function CharacterVoiceChat({ character, chat }) {
               <span className="kid-chat-micbtn-ico" aria-hidden>
                 ⏹️
               </span>
-              أوّق وأرسل
+              أوقف التسجيل
             </>
           ) : phase === "idle" && !isLoading ? (
             <>
@@ -404,7 +404,7 @@ export function CharacterVideoChat({ character, chat }) {
 
         if (blob.size < 400) {
           setPhase("idle");
-          setError("صوتك قصير جداً 🎤 كلّم أطول شوي ثم أوّق بنفس الزر.");
+          setError("صوتك قصير جداً 🎤 كلّم أطول شوي ثم أوقف بنفس الزر.");
           return;
         }
 
@@ -532,7 +532,7 @@ export function CharacterVideoChat({ character, chat }) {
               <span className="kid-chat-micbtn-ico" aria-hidden>
                 ⏹️
               </span>
-              أوّق وأرسل
+              أوقف التسجيل
             </>
           ) : phase === "idle" && !isLoading ? (
             <>

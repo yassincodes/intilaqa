@@ -15,16 +15,41 @@
 @import "@fontsource/inter/700.css";
 
 :root {
+  --eco-charcoal: #2a2624;
+  --eco-bronze: #a67c52;
+  --eco-bronze-light: #d4bc8e;
   --eco-primary: #166534;
   --eco-primary-deep: #0f4d27;
   --eco-primary-soft: #22823f;
   --eco-accent: #0ea5e9;
   --eco-gold: #d97706;
-  --eco-bg: #f8f1e3;
-  --eco-bg-alt: #e0f2e9;
+  --eco-bg: #e9edea;
+  /* Warm paper = top stop of `--app-atmosphere` — use under gradients + nav frost so no hue jump */
+  --app-paper: #f5f3ef;
+  /* Set on `documentElement` in AppShell — must match `main` padding-top (nav offset) */
+  --app-nav-pad: 100px;
+  /* Must stay in sync with `G.atmosphere` in src/theme.js — single site canvas (html only) */
+  --app-atmosphere:
+    radial-gradient(
+      ellipse 120% 70% at 92% -5%,
+      rgba(201, 166, 108, 0.11) 0%,
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 90% 55% at -5% 100%,
+      rgba(90, 124, 102, 0.12) 0%,
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse 70% 50% at 50% 108%,
+      rgba(212, 188, 142, 0.06) 0%,
+      transparent 45%
+    ),
+    linear-gradient(185deg, #f5f3ef 0%, #e9edea 38%, #e6e4e0 100%);
+  --eco-bg-alt: #dce8e3;
   --eco-text: #1f2937;
   --eco-muted: #6b7280;
-  --eco-border: #e2e8e0;
+  --eco-border: #d5ddd8;
   --eco-surface: #ffffff;
   --eco-ink: #0b1411;
 
@@ -47,6 +72,12 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  min-height: 100%;
+  background-color: var(--app-paper);
+  background-image: var(--app-atmosphere);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 body {
@@ -54,7 +85,8 @@ body {
   min-height: 100svh;
   font-family: var(--font-arabic);
   font-weight: 400;
-  background: var(--eco-bg);
+  background-color: transparent;
+  background-image: none;
   color: var(--eco-text);
   direction: rtl;
   -webkit-tap-highlight-color: transparent;
@@ -70,6 +102,7 @@ body {
   flex-direction: column;
   text-align: initial;
   border: none;
+  background: transparent;
 }
 
 h1,
@@ -107,8 +140,8 @@ a {
 
 /* Selection */
 ::selection {
-  background: var(--eco-primary);
-  color: #fff;
+  background: color-mix(in srgb, var(--eco-primary) 88%, #0f172a);
+  color: #ecfdf5;
 }
 
 /* Scrollbar */
@@ -117,12 +150,12 @@ a {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #f0eadb;
+  background: rgba(233, 237, 234, 0.95);
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--eco-primary), var(--eco-primary-deep));
+  background: linear-gradient(180deg, var(--eco-primary-soft), var(--eco-primary-deep));
   border-radius: 999px;
-  border: 2px solid #f0eadb;
+  border: 2px solid rgba(233, 237, 234, 0.95);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--eco-primary-soft);

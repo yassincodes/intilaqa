@@ -11,8 +11,9 @@ import {
   Navigate,
 } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { C, E } from "./theme";
+import { E } from "./theme";
 import "./App.css";
+import schoolLogo from "./assets/school-logo.png";
 
 import HomePage from "./pages/HomePage";
 import EcoClubPage from "./pages/EcoClubPage";
@@ -43,12 +44,12 @@ function LegacyStudentSlugRedirect() {
 
 const NAV = [
   { path: "/", label: "الرئيسية" },
-  { path: "/eco-club", label: "🌿 النادي" },
+  { path: "/eco-club", label: "نادي البيئة" },
   { path: "/students", label: "أعضاء النادي" },
   { path: "/eco-friends", label: "الأصدقاء" },
   { path: "/action-wall", label: "جدار الفعل" },
   { path: "/about", label: "عن المدرسة" },
-  { path: "/tv", label: "📺 TV" },
+  { path: "/tv", label: "التلفزة" },
 ];
 
 /** Reset document scroll on every client-side navigation (React Router keeps position by default). */
@@ -70,7 +71,7 @@ function ScrollToTop() {
   return null;
 }
 
-function AnimatedOutlet() {
+function AnimatedOutlet({ navTopPad }) {
   const location = useLocation();
   const outlet = useOutlet();
 
@@ -78,11 +79,12 @@ function AnimatedOutlet() {
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
+        className="app-outlet-frame"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.4, ease: E.smooth }}
-        style={{ minHeight: "calc(100vh - 68px)" }}
+        style={{ minHeight: `calc(100svh - ${navTopPad}px)` }}
       >
         {outlet}
       </motion.div>
@@ -92,11 +94,29 @@ function AnimatedOutlet() {
 
 function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [navCompact, setNavCompact] = useState(false);
   const location = useLocation();
+
+  const navTopPad = navCompact ? 76 : 100;
 
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        setNavCompact(window.scrollY > 36);
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -107,16 +127,17 @@ function AppShell() {
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
+  useEffect(() => {
+    document.documentElement.style.setProperty("--app-nav-pad", `${navTopPad}px`);
+    return () => {
+      document.documentElement.style.removeProperty("--app-nav-pad");
+    };
+  }, [navTopPad]);
+
+  // Page gradient lives on `html` (index.css --app-atmosphere). Shell stays transparent
+  // so the nav frost + main sit on one continuous canvas.
   return (
-    <div
-      dir="rtl"
-      style={{
-        background: C.bg,
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div className="app-shell" dir="rtl">
       {menuOpen ? (
         <button
           type="button"
@@ -126,58 +147,64 @@ function AppShell() {
         />
       ) : null}
 
-      <nav className={`nav-bar${menuOpen ? " nav-bar--menu-open" : ""}`}>
-        <Link
-          to="/"
-          className="nav-brand"
-          onClick={() => setMenuOpen(false)}
-        >
-          <div className="nav-brand-mark">✦</div>
-          <div>
-            <div className="nav-brand-name">الانطلاقة</div>
-            <div
-              style={{
-                fontSize: 10.5,
-                color: C.muted,
-                fontWeight: 600,
-                letterSpacing: 2,
-              }}
-            >
-              ECO · SCHOOL
+      <nav
+        className={`nav-bar${menuOpen ? " nav-bar--menu-open" : ""}${
+          navCompact ? " nav-bar--compact" : ""
+        }`}
+      >
+        <div className="nav-bar__scrim">
+          <Link
+            to="/"
+            className="nav-brand"
+            onClick={() => setMenuOpen(false)}
+          >
+            <span className="nav-brand-logo-wrap">
+              <img
+                src={schoolLogo}
+                alt="شعار المدرسة الابتدائية النموذجية ببغار"
+                className="nav-brand-logo"
+                width={48}
+                height={48}
+                decoding="async"
+              />
+            </span>
+            <div>
+              <div className="nav-brand-name">الانطلاقة</div>
+              <div className="nav-brand-kicker">نادي البيئة</div>
             </div>
+          </Link>
+
+          <button
+            type="button"
+            className="nav-btn nav-burger"
+            aria-expanded={menuOpen}
+            aria-controls="site-nav-links"
+            aria-label={menuOpen ? "إغلاق القائمة" : "فتح القائمة"}
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            {menuOpen ? "✕ إغلاق" : "☰ القائمة"}
+          </button>
+
+          <div className="nav-links" id="site-nav-links">
+            {NAV.map((n) => (
+              <NavLink
+                key={n.path}
+                to={n.path}
+                end={n.path === "/"}
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  "nav-btn" + (isActive ? " is-active" : "")
+                }
+              >
+                {n.label}
+              </NavLink>
+            ))}
           </div>
-        </Link>
-
-        <button
-          type="button"
-          className="nav-btn nav-burger"
-          aria-expanded={menuOpen}
-          aria-controls="site-nav-links"
-          aria-label={menuOpen ? "إغلاق القائمة" : "فتح القائمة"}
-          onClick={() => setMenuOpen((v) => !v)}
-        >
-          {menuOpen ? "✕ إغلاق" : "☰ القائمة"}
-        </button>
-
-        <div className="nav-links" id="site-nav-links">
-          {NAV.map((n) => (
-            <NavLink
-              key={n.path}
-              to={n.path}
-              end={n.path === "/"}
-              onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                "nav-btn" + (isActive ? " is-active" : "")
-              }
-            >
-              {n.label}
-            </NavLink>
-          ))}
         </div>
       </nav>
 
-      <main style={{ paddingTop: 68, flex: 1 }}>
-        <AnimatedOutlet />
+      <main className="app-main" style={{ paddingTop: navTopPad }}>
+        <AnimatedOutlet navTopPad={navTopPad} />
       </main>
 
       <footer className="footer">
@@ -190,9 +217,15 @@ function AppShell() {
               marginBottom: 16,
             }}
           >
-            <div className="nav-brand-mark" style={{ width: 38, height: 38 }}>
-              ✦
-            </div>
+            <span className="footer-brand-logo-wrap">
+              <img
+                src={schoolLogo}
+                alt=""
+                width={40}
+                height={40}
+                decoding="async"
+              />
+            </span>
             <div style={{ fontWeight: 800, color: "#fff", fontSize: 17 }}>
               مدرسة الانطلاقة
             </div>
@@ -201,6 +234,21 @@ function AppShell() {
             نظام نادي البيئة الرقمي — حيث يتلاقى التعليم والمسؤولية تجاه
             الأرض في رحلة جميلة لأعضاء النادي.
           </p>
+          <h4 style={{ marginTop: 22 }}>تابعنا</h4>
+          <a
+            href="https://www.youtube.com/@alintilaqa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            يوتيوب — @alintilaqa
+          </a>
+          <a
+            href="https://www.tiktok.com/@al_intilaqa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            تيك توك — @al_intilaqa
+          </a>
         </div>
         <div>
           <h4>روابط سريعة</h4>

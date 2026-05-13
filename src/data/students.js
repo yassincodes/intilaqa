@@ -2,26 +2,27 @@
  * أعضاء النادي — حدّث القائمة أدناه عند الحاجة.
  * مسار كل عضو: /@<handle> (مثال: /@mohamed_yassin). الروابط القديمة /students/<slug> تُحوَّل تلقائياً.
  */
+/** @typedef {'m' | 'f'} StudentGender — للتصريف في النصوص العربية (ذكر / أنثى). */
 const STUDENT_ROWS = [
-  { name: "ألاء غبارو", handle: "alaa_ghabarou" },
-  { name: "يوسف سليمان", handle: "yousef_sulayman" },
-  { name: "ريان معيز", handle: "rayan_maeez" },
-  { name: "خديجة عبور", handle: "khadija_abour" },
-  { name: "مجدي الجزيري", handle: "magdi_aljazeeri" },
-  { name: "بشير بن عبد الله", handle: "bashir_abdallah" },
-  { name: "أمين العلوي", handle: "amin_alalawi" },
-  { name: "نوران بن يونس", handle: "nouran_benyounis" },
-  { name: "لميس المي", handle: "lamees_almay" },
-  { name: "نور الهدى غميض", handle: "nour_alhuda_ghameed" },
-  { name: "شمس البدور البجاوي", handle: "shams_albudoor_albajawi" },
-  { name: "ألما كريستو", handle: "alma_kristo" },
-  { name: "آدم بن قارة", handle: "adam_ben_qara" },
-  { name: "تقوى صدور", handle: "taqwa_sudoor" },
-  { name: "محمد علي عياد", handle: "mohamed_ali_iyyad" },
-  { name: "محمد ياسين سليمان", handle: "mohamed_yassin" },
-  { name: "سارة ديلو", handle: "sara_dilo" },
-  { name: "ريم المبروك", handle: "reem_almabrouk" },
-  { name: "يوسف جعفر", handle: "yousef_jafar" },
+  { name: "ألاء غبارو", handle: "alaa_ghabarou", gender: "f" },
+  { name: "يوسف سليمان", handle: "yousef_sulayman", gender: "m" },
+  { name: "ريان معيز", handle: "rayan_maeez", gender: "m" },
+  { name: "خديجة عبور", handle: "khadija_abour", gender: "f" },
+  { name: "مجدي الجزيري", handle: "magdi_aljazeeri", gender: "m" },
+  { name: "بشير بن عبد الله", handle: "bashir_abdallah", gender: "m" },
+  { name: "أمين العلوي", handle: "amin_alalawi", gender: "m" },
+  { name: "نوران بن يونس", handle: "nouran_benyounis", gender: "f" },
+  { name: "لميس المي", handle: "lamees_almay", gender: "f" },
+  { name: "نور الهدى غميض", handle: "nour_alhuda_ghameed", gender: "f" },
+  { name: "شمس البدور البجاوي", handle: "shams_albudoor_albajawi", gender: "f" },
+  { name: "ألما كريستو", handle: "alma_kristo", gender: "f" },
+  { name: "آدم بن قارة", handle: "adam_ben_qara", gender: "m" },
+  { name: "تقوى صدور", handle: "taqwa_sudoor", gender: "f" },
+  { name: "محمد علي عياد", handle: "mohamed_ali_iyyad", gender: "m" },
+  { name: "محمد ياسين سليمان", handle: "mohamed_yassin", gender: "m" },
+  { name: "سارة ديلو", handle: "sara_dilo", gender: "f" },
+  { name: "ريم المبروك", handle: "reem_almabrouk", gender: "f" },
+  { name: "يوسف جعفر", handle: "yousef_jafar", gender: "m" },
 ];
 
 /** يحوّل الاسم الكامل إلى مقطع مسار قديم: «محمد ياسين سليمان» → «محمد-ياسين-سليمان». */
@@ -33,7 +34,7 @@ function nameToSlug(name) {
 function buildStudentEntries(rows) {
   const takenSlugs = new Set();
   const takenHandles = new Set();
-  return rows.map(({ name, handle }) => {
+  return rows.map(({ name, handle, gender }) => {
     const normalizedHandle = String(handle)
       .trim()
       .toLowerCase()
@@ -56,7 +57,8 @@ function buildStudentEntries(rows) {
       sn += 1;
     }
     takenSlugs.add(finalSlug);
-    return { name, handle: uniqueHandle, slug: finalSlug };
+    const g = gender === "f" ? "f" : "m";
+    return { name, handle: uniqueHandle, slug: finalSlug, gender: g };
   });
 }
 
@@ -122,6 +124,139 @@ export function getStudentProfile(name) {
     greenPoints: 24 + (h % 180),
     accent: MEMBER_ACCENTS[h % MEMBER_ACCENTS.length],
   };
+}
+
+/** مهارات بيئية مشتركة — النسب من الهاش حتى تبقى ثابتة لكل اسم (يُستبدل لاحقاً ببيانات حقيقية). */
+const ECO_SKILL_DEFS = [
+  { key: "ecoart", label: "الرسم البيئي", icon: "🎨" },
+  { key: "trees", label: "غرس الأشجار", icon: "🌳" },
+  { key: "speak", label: "التحدث أمام الجمهور", icon: "🎤" },
+  { key: "recycle", label: "إعادة التدوير", icon: "♻️" },
+  { key: "team", label: "العمل الجماعي", icon: "🤝" },
+];
+
+/** @returns {{ key: string, label: string, icon: string, percent: number }[]} */
+export function getStudentSkills(name) {
+  const h = hashName(name);
+  return ECO_SKILL_DEFS.map((def, i) => {
+    const n = (h + i * 7919 + def.key.charCodeAt(0) * 31) >>> 0;
+    const percent = 28 + (n % 71);
+    return { ...def, percent };
+  });
+}
+
+/** عبارة قصيرة للملف — تُختار بثبات من الاسم (يُستبدل لاحقاً بنص يدوي). */
+const STUDENT_BIOS = [
+  "صديق الأرض",
+  "حارس الواحة الخضراء",
+  "نجم المبادرات البيئية",
+  "صوت التوعية في النادي",
+  "يد خضراء في المدرسة",
+  "سفير إعادة التدوير",
+  "روح الفريق البيئي",
+  "محب الطبيعة والأشجار",
+  "مبدع في الرسم البيئي",
+  "متطوع في كل نشاط أخضر",
+  "قائد مجموعة التشجير",
+  "مثال يُحتذى في النظافة",
+];
+
+export function getStudentBio(name) {
+  return STUDENT_BIOS[hashName(name) % STUDENT_BIOS.length];
+}
+
+/** منشورات يكتبها فريق المدرسة/النادي — نصوص جاهزة + تنويع بسيط بالاسم. */
+const TIMELINE_LINES = [
+  {
+    icon: "🌱",
+    m: "شارك في تنظيف ساحة المدرسة ضمن مبادرة «ساحتنا أجمل».",
+    f: "شاركت في تنظيف ساحة المدرسة ضمن مبادرة «ساحتنا أجمل».",
+  },
+  {
+    icon: "♻️",
+    m: "ساهم في فرز القوارير البلاستيكية وإرسالها لمركز إعادة التدوير.",
+    f: "ساهمت في فرز القوارير البلاستيكية وإرسالها لمركز إعادة التدوير.",
+  },
+  {
+    icon: "🌳",
+    m: "شارك في غرس شتلات جديدة في حديقة المدرسة.",
+    f: "شاركت في غرس شتلات جديدة في حديقة المدرسة.",
+  },
+  {
+    icon: "📢",
+    m: "قدّم فقرة قصيرة عن أهمية ترشيد استهلاك الماء في طابور الصباح.",
+    f: "قدّمت فقرة قصيرة عن أهمية ترشيد استهلاك الماء في طابور الصباح.",
+  },
+  {
+    icon: "🎨",
+    m: "ساهم في لوحة جدارية بيئية في الممرّ الرئيسي.",
+    f: "ساهمت في لوحة جدارية بيئية في الممرّ الرئيسي.",
+  },
+  {
+    icon: "🤝",
+    m: "نظّم جانباً من العمل الجماعي في يوم البيئة المفتوح.",
+    f: "نظّمت جانباً من العمل الجماعي في يوم البيئة المفتوح.",
+  },
+  {
+    icon: "🌿",
+    m: "التزم بتتبّع نقاطه الخضراء وتحسينها هذا الشهر.",
+    f: "التزمت بتتبّع نقاطها الخضراء وتحسينها هذا الشهر.",
+  },
+  {
+    icon: "✨",
+    m: "شارك في مسابقة «أفضل عادة صديقة للبيئة» وحصل على إشادة.",
+    f: "شاركت في مسابقة «أفضل عادة صديقة للبيئة» وحصلت على إشادة.",
+  },
+];
+
+/** تواريخ للعرض: يوم + شهر + سنة (أرقام غربية). شهور: جانفي، فيفري، مارس، افريل. مارس من 1 إلى 13 فقط. */
+const TIMELINE_DATE_SLOTS = [
+  { day: 7, month: "جانفي", year: 2026 },
+  { day: 22, month: "جانفي", year: 2026 },
+  { day: 31, month: "جانفي", year: 2026 },
+  { day: 4, month: "فيفري", year: 2026 },
+  { day: 19, month: "فيفري", year: 2026 },
+  { day: 27, month: "فيفري", year: 2026 },
+  { day: 2, month: "مارس", year: 2026 },
+  { day: 11, month: "مارس", year: 2026 },
+  { day: 13, month: "مارس", year: 2026 },
+  { day: 5, month: "افريل", year: 2026 },
+  { day: 16, month: "افريل", year: 2026 },
+  { day: 28, month: "افريل", year: 2026 },
+  { day: 3, month: "جانفي", year: 2026 },
+  { day: 15, month: "فيفري", year: 2026 },
+  { day: 8, month: "مارس", year: 2026 },
+  { day: 21, month: "افريل", year: 2026 },
+];
+
+/** @returns {{ id: string, icon: string, body: string, date: { day: number, month: string, year: number } }[]} */
+export function getStudentTimeline(name, gender = "m") {
+  const g = gender === "f" ? "f" : "m";
+  const h = hashName(name);
+  const first = name.trim().split(/\s+/)[0] ?? name;
+  const n = 5;
+  const out = [];
+  const used = new Set();
+  for (let i = 0; i < n; i += 1) {
+    let idx = (h + i * 31 + i * i) % TIMELINE_LINES.length;
+    let guard = 0;
+    while (used.has(idx) && guard < TIMELINE_LINES.length) {
+      idx = (idx + 1) % TIMELINE_LINES.length;
+      guard += 1;
+    }
+    used.add(idx);
+    const row = TIMELINE_LINES[idx];
+    const lineBody = row[g];
+    const date = TIMELINE_DATE_SLOTS[(h + i * 7) % TIMELINE_DATE_SLOTS.length];
+    const body = i === 0 ? `${first} ${lineBody}` : lineBody;
+    out.push({
+      id: `${h}-${i}`,
+      icon: row.icon,
+      body,
+      date,
+    });
+  }
+  return out;
 }
 
 /** لوحة نادي البيئة — مجاميع من بيانات الأعضاء (نفس منطق البطاقات الفردية). */

@@ -18,13 +18,13 @@ export const C = {
   goldSoft: "#F59E0B",
   goldLight: "#FEF3C7",
 
-  // ── Surfaces ──────────────────────────────────────────────────────────
-  bg: "#F8F1E3", // warm cream background
-  bgAlt: "#E0F2E9", // light sage
-  bgWarm: "#FBF5E8", // cream highlight
+  // ── Surfaces (atelier canvas — mist + paper, not flat gray) ──────────
+  bg: "#E9EDEA",
+  bgAlt: "#DCE8E3",
+  bgWarm: "#F2F5F3",
   surface: "#FFFFFF",
-  surfaceMuted: "#F3F0E6",
-  surfaceTinted: "#ECF6EF", // sage-tinted card
+  surfaceMuted: "#E8EEEB",
+  surfaceTinted: "#E4F0EC",
 
   // ── Text ─────────────────────────────────────────────────────────────
   text: "#1F2937", // dark slate
@@ -67,9 +67,14 @@ export const C = {
 
 /* ────────────────── Gradients ────────────────── */
 export const G = {
-  hero: `radial-gradient(1200px 700px at 12% 10%, ${C.bgAlt} 0%, transparent 60%),
-         radial-gradient(900px 600px at 90% 90%, #FBE9C2 0%, transparent 60%),
-         linear-gradient(180deg, ${C.bg} 0%, #F4ECDB 100%)`,
+  hero: `radial-gradient(1200px 700px at 12% 10%, ${C.bgAlt} 0%, transparent 58%),
+         radial-gradient(900px 600px at 88% 92%, rgba(228, 238, 232, 0.55) 0%, transparent 55%),
+         linear-gradient(180deg, ${C.bg} 0%, #E9EDE8 100%)`,
+  /** Full-page wash: soft aurora blobs + sage floor (used on shell) — keep in sync with `--app-atmosphere` in index.css */
+  atmosphere: `radial-gradient(ellipse 120% 70% at 92% -5%, rgba(201, 166, 108, 0.11) 0%, transparent 52%),
+    radial-gradient(ellipse 90% 55% at -5% 100%, rgba(90, 124, 102, 0.12) 0%, transparent 48%),
+    radial-gradient(ellipse 70% 50% at 50% 108%, rgba(212, 188, 142, 0.06) 0%, transparent 45%),
+    linear-gradient(185deg, #f5f3ef 0%, ${C.bg} 38%, #e6e4e0 100%)`,
   forest: `linear-gradient(135deg, ${C.primary} 0%, ${C.primaryDeep} 100%)`,
   forestSoft: `linear-gradient(135deg, ${C.primarySoft} 0%, ${C.primary} 100%)`,
   ocean: `linear-gradient(135deg, ${C.accent} 0%, ${C.accentDeep} 100%)`,
