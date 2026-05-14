@@ -43,12 +43,11 @@ function LegacyStudentSlugRedirect() {
 }
 
 const NAV = [
-  { path: "/", label: "الرئيسية" },
+  { path: "/about", label: "المدرسة" },
   { path: "/eco-club", label: "نادي البيئة" },
   { path: "/students", label: "أعضاء النادي" },
-  { path: "/eco-friends", label: "الأصدقاء" },
+  { path: "/eco-friends", label: "أصدقاء النادي" },
   { path: "/action-wall", label: "جدار الفعل" },
-  { path: "/about", label: "عن المدرسة" },
   { path: "/tv", label: "التلفزة" },
 ];
 
@@ -170,7 +169,6 @@ function AppShell() {
             </span>
             <div>
               <div className="nav-brand-name">الانطلاقة</div>
-              <div className="nav-brand-kicker">نادي البيئة</div>
             </div>
           </Link>
 
@@ -190,7 +188,6 @@ function AppShell() {
               <NavLink
                 key={n.path}
                 to={n.path}
-                end={n.path === "/"}
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
                   "nav-btn" + (isActive ? " is-active" : "")
@@ -248,6 +245,14 @@ function AppShell() {
             rel="noopener noreferrer"
           >
             تيك توك — @al_intilaqa
+          </a>
+          <a
+            href="https://www.facebook.com/profile.php?id=61556200167642"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="المدرسة الابتدائية الانطلاقة غار الملح — فيسبوك"
+          >
+            فيسبوك — المدرسة الابتدائية الانطلاقة
           </a>
         </div>
         <div>

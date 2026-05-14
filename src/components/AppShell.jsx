@@ -6,7 +6,6 @@ function NavItem({ to, children, onNavigate }) {
   return (
     <NavLink
       to={to}
-      end={to === "/"}
       className={({ isActive }) => `nav-btn${isActive ? " is-active" : ""}`}
       onClick={onNavigate}
     >
@@ -19,13 +18,12 @@ export default function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
   const nav = useMemo(
     () => [
-      { path: "/", label: "الرئيسية" },
-      { path: "/eco-club", label: "🌿 النادي" },
+      { path: "/about", label: "المدرسة" },
+      { path: "/eco-club", label: "نادي البيئة" },
       { path: "/students", label: "أعضاء النادي" },
-      { path: "/eco-friends", label: "الأصدقاء" },
+      { path: "/eco-friends", label: "أصدقاء النادي" },
       { path: "/action-wall", label: "جدار الفعل" },
-      { path: "/about", label: "عن المدرسة" },
-      { path: "/tv", label: "📺 TV" },
+      { path: "/tv", label: "التلفزة" },
     ],
     [],
   );
@@ -37,7 +35,7 @@ export default function AppShell() {
       <nav className="nav-bar">
         <Link to="/" className="nav-brand" onClick={onNavigate}>
           <div className="nav-brand-mark">✦</div>
-          <div className="nav-brand-name">الانطلاقة · بيئة</div>
+          <div className="nav-brand-name">الانطلاقة</div>
         </Link>
 
         <button

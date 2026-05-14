@@ -8,6 +8,22 @@ export const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@alintilaqa";
 
 const channels = tvChannels;
 
+/** Below `.tv-page__grid` desktop breakpoint in App.css — list sits under the player; scroll so the new clip is visible. */
+const TV_PHONE_LAYOUT_MQ = "(max-width: 859px)";
+
+/** Match App.jsx ScrollToTop. */
+function scrollDocumentToTop() {
+  const root = document.scrollingElement ?? document.documentElement;
+  root.scrollTop = 0;
+  root.scrollLeft = 0;
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  requestAnimationFrame(() => {
+    root.scrollTop = 0;
+    root.scrollLeft = 0;
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  });
+}
+
 function playlistTip(p) {
   if (p.type === "upload") {
     return "فيديو محلي — اضغط تشغيل ▶ على الشاشة؛ الصوت يعمل بعد تفاعلك مع المشغّل (خصوصاً على الجوال).";
@@ -26,6 +42,12 @@ function playlistTip(p) {
 
 export default function TVPage() {
   const [active, setActive] = useState(0);
+  const selectChannel = (i) => {
+    setActive(i);
+    if (typeof window !== "undefined" && window.matchMedia(TV_PHONE_LAYOUT_MQ).matches) {
+      scrollDocumentToTop();
+    }
+  };
   const p = channels[active];
   const videoRef = useRef(null);
   const shortActive = p?.type === "youtube" && p?.isShort;
@@ -152,7 +174,7 @@ export default function TVPage() {
                   key={ch.id}
                   type="button"
                   className={`tv-page__list-item${active === i ? " is-active" : ""}`}
-                  onClick={() => setActive(i)}
+                  onClick={() => selectChannel(i)}
                 >
                   <span className="tv-page__list-icon" aria-hidden>
                     {ch.icon}
