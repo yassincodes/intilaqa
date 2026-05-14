@@ -15,6 +15,16 @@ import hummingbirdImg from "../assets/characters/hummingbird.png";
 import shamouzaSunImg from "../assets/characters/shamouza-sun.png";
 import schoolLogoImg from "../assets/school-logo.png";
 
+/** Warm the network cache for above-the-fold art (Vite resolves to final URLs in prod). */
+const HERO_IMAGE_PRELOAD_HREFS = [
+  nadhifBoyImg,
+  nadhifaGirlImg,
+  hummingbirdImg,
+  shamouzaSunImg,
+  qatraImg,
+  schoolLogoImg,
+];
+
 const MotionLink = motion.create(Link);
 
 /** Scroll / hero reveals with a slight scale “breath” for depth */
@@ -38,15 +48,15 @@ const revealScaleWide = {
   },
 };
 
-const fadeBlurUpFrom = (x = 0, extraY = 0) => ({
-  hidden: { opacity: 0, y: 36 + extraY, x, filter: "blur(12px)", scale: 0.94 },
+/** Hero headline sweep — no animated filter (much cheaper than blur on every frame). */
+const fadeSweepFrom = (x = 0, extraY = 0) => ({
+  hidden: { opacity: 0, y: 28 + extraY, x, scale: 0.97 },
   show: {
     opacity: 1,
     y: 0,
     x: 0,
-    filter: "blur(0px)",
     scale: 1,
-    transition: { type: "spring", stiffness: 82, damping: 18, mass: 0.82 },
+    transition: { type: "spring", stiffness: 88, damping: 18, mass: 0.82 },
   },
 });
 
@@ -71,28 +81,28 @@ const statPop = {
 };
 
 const riseFromSide = (x = 0) => ({
-  hidden: { opacity: 0, y: 32, x, scale: 0.94, filter: "blur(7px)" },
+  hidden: { opacity: 0, y: 32, x, scale: 0.94 },
   show: {
     opacity: 1,
     y: 0,
     x: 0,
     scale: 1,
-    filter: "blur(0px)",
     transition: { type: "spring", stiffness: 70, damping: 17, mass: 0.88 },
   },
 });
 
+/** Easier to satisfy than a tight ratio + negative root margin (avoids “stuck” hidden states on some viewports). */
 const scrollViewport = {
   once: true,
-  amount: 0.18,
-  margin: "0px 0px -10% 0px",
+  amount: 0.08,
+  margin: "0px 0px 14% 0px",
 };
 
 /** Slightly earlier trigger so long school blocks feel alive sooner */
 const scrollViewportSchool = {
   once: true,
-  amount: 0.14,
-  margin: "0px 0px -14% 0px",
+  amount: 0.08,
+  margin: "0px 0px 12% 0px",
 };
 
 const HUB_BANDS = [
@@ -169,6 +179,9 @@ function Mascot({
   reduceMotion,
   /** When the parent link runs the entrance, skip duplicate fade on the image */
   entranceHandledByParent = false,
+  width,
+  height,
+  fetchPriority,
 }) {
   const gentle = {
     opacity: 1,
@@ -189,6 +202,11 @@ function Mascot({
     <motion.img
       src={src}
       alt={alt}
+      width={width}
+      height={height}
+      decoding="async"
+      loading="eager"
+      fetchPriority={fetchPriority}
       draggable={false}
       className="mascot"
       initial={entranceHandledByParent ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" } : introHidden}
@@ -262,12 +280,11 @@ function LandingSchoolIntro({ reduceMotion }) {
   const introLogoV = reduceMotion
     ? fadeUp
     : {
-        hidden: { opacity: 0, scale: 0.82, rotate: -7, filter: "blur(14px)", y: 24 },
+        hidden: { opacity: 0, scale: 0.82, rotate: -7, y: 24 },
         show: {
           opacity: 1,
           scale: 1,
           rotate: 0,
-          filter: "blur(0px)",
           y: 0,
           transition: { type: "spring", stiffness: 62, damping: 13 },
         },
@@ -276,12 +293,11 @@ function LandingSchoolIntro({ reduceMotion }) {
   const introCopyV = reduceMotion
     ? fadeUp
     : {
-        hidden: { opacity: 0, y: 40, x: 28, filter: "blur(10px)" },
+        hidden: { opacity: 0, y: 40, x: 28 },
         show: {
           opacity: 1,
           y: 0,
           x: 0,
-          filter: "blur(0px)",
           transition: { type: "spring", stiffness: 70, damping: 16, mass: 0.88 },
         },
       };
@@ -319,7 +335,15 @@ function LandingSchoolIntro({ reduceMotion }) {
               whileHover={reduceMotion ? {} : { scale: 1.04 }}
               transition={{ type: "spring", stiffness: 320, damping: 18 }}
             >
-              <img src={schoolLogoImg} alt="شعار مدرسة الانطلاقة" className="landing-school-logo" width={220} height={220} />
+              <img
+                src={schoolLogoImg}
+                alt="شعار مدرسة الانطلاقة"
+                className="landing-school-logo"
+                width={943}
+                height={960}
+                decoding="async"
+                loading="lazy"
+              />
             </motion.div>
             <div className="landing-school-logo-glow" aria-hidden />
           </motion.div>
@@ -369,12 +393,11 @@ function LandingSchoolPillars({ reduceMotion }) {
   const pillarCard = reduceMotion
     ? springIn
     : {
-        hidden: { opacity: 0, y: 56, rotateX: -10, filter: "blur(8px)", scale: 0.94 },
+        hidden: { opacity: 0, y: 56, rotateX: -10, scale: 0.94 },
         show: {
           opacity: 1,
           y: 0,
           rotateX: 0,
-          filter: "blur(0px)",
           scale: 1,
           transition: { type: "spring", stiffness: 68, damping: 15, mass: 0.9 },
         },
@@ -473,6 +496,21 @@ export default function HomePage() {
   const reduceMotion = useReducedMotion();
   useHeroParallax(heroRef);
 
+  useEffect(() => {
+    const appended = [];
+    for (const href of HERO_IMAGE_PRELOAD_HREFS) {
+      const el = document.createElement("link");
+      el.rel = "preload";
+      el.as = "image";
+      el.href = href;
+      document.head.appendChild(el);
+      appended.push(el);
+    }
+    return () => {
+      for (const el of appended) el.remove();
+    };
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
@@ -491,6 +529,8 @@ export default function HomePage() {
         slug: "nadhif",
         alt: "نظيف",
         src: nadhifBoyImg,
+        width: 417,
+        height: 598,
         scatterClass: "mascot-scatter--boy",
         tiltLayerStyle: {
           "--mascot-tilt": "5deg",
@@ -506,6 +546,8 @@ export default function HomePage() {
         slug: "nadhifa",
         alt: "نظيفة",
         src: nadhifaGirlImg,
+        width: 417,
+        height: 598,
         scatterClass: "mascot-scatter--girl",
         tiltLayerStyle: {
           "--mascot-tilt": "-4deg",
@@ -521,6 +563,8 @@ export default function HomePage() {
         slug: "hummingbird",
         alt: "الطائر الطنان",
         src: hummingbirdImg,
+        width: 488,
+        height: 511,
         scatterClass: "mascot-scatter--bird",
         tiltLayerStyle: {
           "--mascot-tilt": "5deg",
@@ -536,6 +580,8 @@ export default function HomePage() {
         slug: "shamouza",
         alt: "شموسه",
         src: shamouzaSunImg,
+        width: 488,
+        height: 511,
         scatterClass: "mascot-scatter--sun",
         tiltLayerStyle: {
           "--mascot-tilt": "-6deg",
@@ -551,6 +597,8 @@ export default function HomePage() {
         slug: "qatra",
         alt: "قطرة",
         src: qatraImg,
+        width: 448,
+        height: 558,
         scatterClass: "mascot-scatter--qatra",
         tiltLayerStyle: {
           "--mascot-tilt": "8deg",
@@ -596,8 +644,8 @@ export default function HomePage() {
         },
       };
 
-  const lineSweepL = reduceMotion ? rmQuick : fadeBlurUpFrom(-58, 12);
-  const lineSweepR = reduceMotion ? rmQuick : fadeBlurUpFrom(56, 8);
+  const lineSweepL = reduceMotion ? rmQuick : fadeSweepFrom(-58, 12);
+  const lineSweepR = reduceMotion ? rmQuick : fadeSweepFrom(56, 8);
 
   const subtitleLift = reduceMotion
     ? rmQuick
@@ -636,7 +684,7 @@ export default function HomePage() {
     ? { hidden: {}, show: {} }
     : {
         hidden: {},
-        show: { transition: { staggerChildren: 0.085, delayChildren: 0.52 } },
+        show: { transition: { staggerChildren: 0.07, delayChildren: 0.2 } },
       };
 
   const mascotPop = (i) =>
@@ -800,11 +848,14 @@ export default function HomePage() {
                     <Mascot
                       src={m.src}
                       alt={m.alt}
+                      width={m.width}
+                      height={m.height}
                       floatDelay={m.floatDelay}
                       drift={m.drift}
                       dur={m.dur}
                       reduceMotion={reduceMotion}
                       entranceHandledByParent={!reduceMotion}
+                      fetchPriority={i === 0 ? "high" : i >= 3 ? "low" : undefined}
                       style={{ left: 0, top: 0, width: "100%" }}
                     />
                   </span>
