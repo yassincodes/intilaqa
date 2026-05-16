@@ -20,21 +20,16 @@ export default function StudentsPage() {
       STUDENTS.map(({ name, handle }) => ({
         name,
         handle,
-        ...getStudentProfile(name),
+        emoji: getStudentProfile(name).emoji,
       })),
     [],
   );
-
   const memberCount = students.length;
 
   return (
     <div dir="rtl" className="page-root students-page">
       <div className="students-page-bg" aria-hidden />
       <section className="students-hero">
-        <div className="students-hero-blob students-hero-blob-a" aria-hidden />
-        <div className="students-hero-blob students-hero-blob-b" aria-hidden />
-        <div className="students-hero-grid" aria-hidden />
-
         <motion.div
           className="students-hero-inner"
           variants={stagger(0.07)}
@@ -46,28 +41,17 @@ export default function StudentsPage() {
             نادي البيئة · الانطلاقة
           </motion.div>
           <motion.h1 variants={fadeUp} className="students-hero-title">
-            <span className="students-hero-title-line">ملفّات</span>
-            <span className="students-hero-title-accent">أعضاء النادي</span>
+            <span className="students-hero-title-line">أعضاء</span>
+            <span className="students-hero-title-accent">نادي البيئة</span>
           </motion.h1>
           <motion.p variants={fadeUp} className="students-hero-sub">
-            بطاقات حيّة لكل عضو: ورود التقدير، المشاركات البيئية، والنقاط الخضراء — جاهزة
-            لربطها لاحقاً ببيانات حقيقية من المدرسة.
+            قائمة بأسماء الأعضاء — سنضيف التفاصيل لاحقاً عند توفّر البيانات.
           </motion.p>
           <motion.div variants={fadeUp} className="students-hero-metrics">
-            <div className="students-metric">
+            <motion.div variants={fadeUp} className="students-metric">
               <span className="students-metric-value">{memberCount}</span>
-              <span className="students-metric-label">عضواً في العرض</span>
-            </div>
-            <div className="students-metric-divider" />
-            <div className="students-metric">
-              <span className="students-metric-value">3</span>
-              <span className="students-metric-label">مؤشرات لكل بطاقة</span>
-            </div>
-            <div className="students-metric-divider" />
-            <div className="students-metric">
-              <span className="students-metric-value eco">ECO</span>
-              <span className="students-metric-label">لوحة النادي</span>
-            </div>
+              <span className="students-metric-label">عضواً</span>
+            </motion.div>
           </motion.div>
         </motion.div>
       </section>
@@ -79,64 +63,25 @@ export default function StudentsPage() {
         animate="show"
       >
         <div className="students-grid">
-          {students.map((s, idx) => (
+          {students.map((s) => (
             <Link
               key={`${s.handle}-${s.name}`}
               to={studentProfilePath(s.handle)}
               className="student-card-link"
-              aria-label={`شارة ${s.name}`}
+              aria-label={s.name}
             >
               <motion.div
-                className="student-card"
+                className="student-card student-card--name-only"
                 variants={popCard}
-                style={{
-                  "--m-ring": s.accent.ring,
-                  "--m-glow": s.accent.glow,
-                  "--m-chip": s.accent.chip,
-                }}
-                whileHover={{ y: -10, transition: { duration: 0.35, ease: E.smooth } }}
+                whileHover={{ y: -6, transition: { duration: 0.35, ease: E.smooth } }}
               >
-                <div className="student-card-shine" aria-hidden />
-                <span className="student-card-index" aria-hidden>
-                  {idx + 1}
-                </span>
                 <div className="student-card-top">
                   <div className="student-card-avatar" aria-hidden>
                     <span className="student-card-avatar-ring" />
                     <span className="student-card-emoji">{s.emoji}</span>
                   </div>
                   <h2 className="student-card-name">{s.name}</h2>
-                  <p className="student-card-tag">عضو نادي بيئة</p>
                 </div>
-                <ul className="student-card-stats">
-                  <li className="student-stat student-stat--roses">
-                    <span className="student-stat-icon" aria-hidden>
-                      🌹
-                    </span>
-                    <span className="student-stat-meta">
-                      <span className="student-stat-label">ورود التقدير</span>
-                      <span className="student-stat-value">{s.roses}</span>
-                    </span>
-                  </li>
-                  <li className="student-stat student-stat--missions">
-                    <span className="student-stat-icon" aria-hidden>
-                      ✨
-                    </span>
-                    <span className="student-stat-meta">
-                      <span className="student-stat-label">مشاركات</span>
-                      <span className="student-stat-value">{s.missions}</span>
-                    </span>
-                  </li>
-                  <li className="student-stat student-stat--green">
-                    <span className="student-stat-icon" aria-hidden>
-                      🌿
-                    </span>
-                    <span className="student-stat-meta">
-                      <span className="student-stat-label">نقاط خضراء</span>
-                      <span className="student-stat-value">{s.greenPoints}</span>
-                    </span>
-                  </li>
-                </ul>
               </motion.div>
             </Link>
           ))}

@@ -18,7 +18,6 @@ import schoolLogo from "./assets/school-logo.png";
 import HomePage from "./pages/HomePage";
 import EcoClubPage from "./pages/EcoClubPage";
 import EcoFriendsPage from "./pages/EcoFriendsPage";
-import ActionWallPage from "./pages/ActionWallPage";
 import AboutPage from "./pages/AboutPage";
 import TVPage from "./pages/TVPage";
 import StudentsPage from "./pages/StudentsPage";
@@ -47,7 +46,6 @@ const NAV = [
   { path: "/eco-club", label: "نادي البيئة" },
   { path: "/students", label: "أعضاء النادي" },
   { path: "/eco-friends", label: "أصدقاء النادي" },
-  { path: "/action-wall", label: "جدار الفعل" },
   { path: "/tv", label: "التلفزة" },
 ];
 
@@ -307,7 +305,7 @@ export default function App() {
           <Route path="students/:slug" element={<LegacyStudentSlugRedirect />} />
           <Route path="eco-missions" element={<Navigate to="/eco-club" replace />} />
           <Route path="eco-friends" element={<EcoFriendsPage />} />
-          <Route path="action-wall" element={<ActionWallPage />} />
+          <Route path="action-wall" element={<Navigate to="/" replace />} />
           <Route path="good-habits" element={<Navigate to="/eco-club" replace />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="tv" element={<TVPage />} />

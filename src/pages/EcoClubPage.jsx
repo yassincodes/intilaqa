@@ -89,9 +89,6 @@ export default function EcoClubPage() {
         <Link to="/students" className="btn-eco">
           أعضاء النادي
         </Link>
-        <Link to="/action-wall" className="btn-outline-eco">
-          جدار الفعل
-        </Link>
       </div>
     </div>
   );

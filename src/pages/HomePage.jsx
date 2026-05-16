@@ -116,8 +116,7 @@ const HUB_BANDS = [
     title: "النادي والإنجاز",
     links: [
       { to: "/eco-club", label: "نادي البيئة", icon: "🌿", hint: "لوحة النشاط والمبادرات" },
-      { to: "/students", label: "أعضاء النادي", icon: "👥", hint: "بطاقات الأعضاء والنقاط" },
-      { to: "/action-wall", label: "جدار الفعل", icon: "✨", hint: "إنجازات الفصول" },
+      { to: "/students", label: "أعضاء النادي", icon: "👥", hint: "أسماء أعضاء النادي" },
     ],
   },
   {
@@ -250,7 +249,7 @@ const SCHOOL_PILLARS = [
     key: "together",
     icon: "🤝",
     title: "مجتمعٌ يُبنى معاً",
-    text: "معلّمون وأطفال وعائلات يشاركون قصة الانطلاقة — نادي بيئة، إعلام، وجدار فعل.",
+    text: "معلّمون وأطفال وعائلات يشاركون قصة الانطلاقة — نادي بيئة وإعلام.",
   },
 ];
 
@@ -355,7 +354,7 @@ function LandingSchoolIntro({ reduceMotion }) {
             </h2>
             <p className="landing-school-lead">
               أول مدرسة إيكولوجية في تونس: تعليم ابتدائي يلتقي بالاهتمام بالأرض. معنا نادي البيئة ونادي الإعلامية،
-              والانطلاقة TV وجدار الفعل — تجربة مدرسية حيّة ببساطة وبُهجة تناسب الأطفال والمعلّمين.
+              والانطلاقة TV — تجربة مدرسية حيّة ببساطة وبُهجة تناسب الأطفال والمعلّمين.
             </p>
             <div className="landing-school-intro-cta">
               <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.98 }} style={{ display: "inline-block" }}>

@@ -22,7 +22,6 @@ export default function AppShell() {
       { path: "/eco-club", label: "نادي البيئة" },
       { path: "/students", label: "أعضاء النادي" },
       { path: "/eco-friends", label: "أصدقاء النادي" },
-      { path: "/action-wall", label: "جدار الفعل" },
       { path: "/tv", label: "التلفزة" },
     ],
     [],

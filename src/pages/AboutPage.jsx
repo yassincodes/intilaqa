@@ -21,12 +21,6 @@ const HIGHLIGHTS = [
     text: "فيديوهات قصيرة من الفصل والملعب — ببساطة وبفرح.",
     to: "/tv",
   },
-  {
-    icon: "✨",
-    title: "جدار الفعل",
-    text: "نفتخر بإنجازات فصولنا ونشاركها مع الجميع.",
-    to: "/action-wall",
-  },
 ];
 
 export default function AboutPage() {
@@ -56,7 +50,7 @@ export default function AboutPage() {
           فضاء ابتدائي يجمع بين البساطة والبهجة للأطفال والمعلّمين.
         </motion.p>
         <motion.p variants={fadeUp} style={{ fontSize: 16, lineHeight: 1.8, color: C.muted }}>
-          معنا اليوم نادي البيئة ونادي الإعلامية، إلى جانب الانطلاقة TV وجدار الفعل — كلّها تكمّل بعضها
+          معنا اليوم نادي البيئة ونادي الإعلامية، إلى جانب الانطلاقة TV — كلّها تكمّل بعضها
           لتجربة مدرسية حيّة ومسؤولة.
         </motion.p>
       </motion.div>
